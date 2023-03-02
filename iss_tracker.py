@@ -110,6 +110,19 @@ def retrieve_data():
     iss_data = xmltodict.parse(r.text)
     return "Successfully reloaded data\n"
 
+@app.route('/comment', methods = ['GET'])
+def display_comments():
+    data = data_set()
+    comments = []
+    for i in range(len(data['ndm']['oem']['body']['segment']['data']['COMMENT'])):
+        comments.append(data['ndm']['oem']['body']['segment']['data']['COMMENT'][i])
+    #for ndm, oem, body, segment, datas in data.items():
+        #for val in datas:
+            #comments.append(datas[val])        
+    #res = [val[temp] for key, val in data.items() if temp in val]
+    #print(str(res))
+    return comments
+
 @app.route('/help', methods = ['GET'])
 def define_routes():
     return '''\nUsage: curl 'localhost:5000[OPTIONS]'\n

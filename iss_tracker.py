@@ -1,10 +1,11 @@
 #Pranjal Adhikari pa8729
 
 from flask import Flask, request
+from geopy.geocoders import Nominatim
 import requests
 import xmltodict
 import math
-from geopy.geocoders import Nominatim
+import time
 
 r = requests.get('https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
 iss_data = xmltodict.parse(r.text)
@@ -22,6 +23,9 @@ def data_set():
     Returns:
         iss_data (dictionary): ISS data set
     """
+    global iss_data
+    if not iss_data:
+        return f"Data not loaded in\n", 404
     return iss_data
 
 #to run with query parameter: curl 'localhost:5000/epochs?limit=int&offset=int'
@@ -38,18 +42,18 @@ def modified_epoch():
     try:
         num_epochs = request.args.get('limit', len(data['ndm']['oem']['body']['segment']['data']['stateVector']))
     except KeyError:
-        return "Data not loaded in\n"
+        return f"Data not loaded in\n", 404
     start = request.args.get('offset', 0)
     if num_epochs:
         try:
             num_epochs = int(num_epochs)
         except ValueError:
-            return "Limit must be an integer\n"
+            return f"Limit must be an integer\n", 404
     if start:
         try:
             start = int(start)
         except ValueError:
-            return "Start must be an integer\n"
+            return f"Start must be an integer\n", 404
     end = start + num_epochs
     epochs = []
     while start < end:
@@ -75,7 +79,9 @@ def vectors(epoch: str) -> list:
                 state_vectors.append(data['ndm']['oem']['body']['segment']['data']['stateVector'][i])
                 return state_vectors
     except KeyError:
-        return "Data not loaded in\n"
+        return f"Data not loaded in\n", 404
+    except TypeError:
+        return f"Data not loaded in\n", 404
     
 @app.route('/epochs/<epoch>/speed', methods = ['GET'])
 def epoch_speed(epoch: str) -> dict:
@@ -88,23 +94,28 @@ def epoch_speed(epoch: str) -> dict:
         speed (dict): the speed of the ISS at the specified EPOCH
     """
     data = vectors(epoch)
-    speed = {}
     try:
         sumSpeedSquare = pow(float(data[0]['X_DOT']['#text']), 2) + pow(float(data[0]['Y_DOT']['#text']), 2) + pow(float(data[0]['Z_DOT']['#text']), 2)
     except TypeError:
-        return "Data not loaded in\n"
-    speed['Speed of EPOCH'] = (math.sqrt(sumSpeedSquare)) #magnitude of speed utilizing the x, y, and z components of speed
-    return speed
+        return f"Data not loaded in\n", 404
+    speed = (math.sqrt(sumSpeedSquare)) #magnitude of speed utilizing the x, y, and z components of speed
+    speed_data = {}
+    speed_data['value'] = speed
+    speed_data['units'] = data[0]['X_DOT']['@units']
+    return speed_data
 
 @app.route('/epochs/<epoch>/location', methods = ['GET'])
 def epoch_location(epoch: str) -> dict:
     data = vectors(epoch)
-    mean_earth_radius = 6378.137 #earth radius in km
-    x = float(data[0]['X']['#text'])
-    y = float(data[0]['Y']['#text'])
-    z = float(data[0]['Z']['#text'])
-    hrs = float(epoch[9:10])
-    mins = float(epoch[12:13])
+    mean_earth_radius = 6371 #earth radius in km
+    try:
+        x = float(data[0]['X']['#text'])
+        y = float(data[0]['Y']['#text'])
+        z = float(data[0]['Z']['#text'])
+    except TypeError:
+        return f"Data not loaded in\n", 404
+    hrs = int(epoch[9:11])
+    mins = int(epoch[12:14])
     lat = math.degrees(math.atan2(z, math.sqrt(pow(x, 2)+pow(y, 2))))
     lon = math.degrees(math.atan2(y, x)) - ((hrs-12)+(mins/60))*(360/24) + 24
     if lon > 180: #handling cases where longitude outside of earth latitude range -180 => 180 degrees
@@ -114,57 +125,82 @@ def epoch_location(epoch: str) -> dict:
     alt = math.sqrt(pow(x, 2)+pow(y, 2)+pow(z, 2)) - mean_earth_radius
     geocoder = Nominatim(user_agent='iss_tracker')
     geolocation = geocoder.reverse((lat, lon), zoom=15, language='en')
-    location_data = {'latitude': lat, 'longitude': lon, 'altitude': alt, 'geolocation': str(geolocation)}
-    #location_data = {}
-    #location_data['latitude'] = lat
-    #location_data['longitude'] = lon
-    #location_data['altitude'] = alt
-    #location_data.update(geolocation)
+    if geolocation == None:
+        geolocation = 'none'
+    else:
+        geolocation = geolocation.raw
+        geolocation = geolocation['address']
+    location_data = {}
+    location_data['latitude'] = lat
+    location_data['longitude'] = lon
+    location_data['altitude'] = {'units': data[0]['X']['@units'],
+                                 'value': alt}
+    location_data['geolocation'] = geolocation
     return location_data
-    
+
+@app.route('/now', methods = ['GET'])
+def now() -> dict:
+    data = data_set()
+    now_data = {}
+    current_time = time.time()
+    diff = float('inf')
+    try:
+        for i in data['ndm']['oem']['body']['segment']['data']['stateVector']:
+            strptime = time.strptime(i['EPOCH'][:-5], '%Y-%jT%H:%M:%S')
+            epoch_time = time.mktime(strptime)
+            time_diff = current_time - epoch_time
+            if abs(time_diff) < abs(diff):
+                min_i = i
+                diff = time_diff
+    except TypeError:
+        return f"Data not loaded in\n", 404
+    now_data['closest_epoch'] = min_i['EPOCH']
+    now_data['speed'] = epoch_speed(min_i['EPOCH'])
+    now_data['seconds_from_now'] = diff
+    now_data['location'] = epoch_location(min_i['EPOCH'])
+    return now_data
+
 #to run: curl -X DELETE localhost:5000/delete-data
 @app.route('/delete-data', methods = ['DELETE'])
-def del_data():
+def del_data() -> str:
     global iss_data
     iss_data.clear()
     return "Deleted ISS data\n"
 
 #to run: curl -X POST localhost:5000/post-data
 @app.route('/post-data', methods = ['POST'])
-def retrieve_data():
+def retrieve_data() -> str:
     global iss_data
     r = requests.get('https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
     iss_data = xmltodict.parse(r.text)
     return "Successfully reloaded data\n"
 
 @app.route('/comment', methods = ['GET'])
-def display_comments():
+def display_comments() -> list:
     data = data_set()
-    return data['ndm']['oem']['body']['segment']['data']['COMMENT']
-    #for i in range(len(data['ndm']['oem']['body']['segment']['data']['COMMENT'])):
-     #   comments.append(data['ndm']['oem']['body']['segment']['data']['COMMENT'][i])
-    #for ndm, oem, body, segment, datas, comment in data.items():
-        #for val in datas:
-            #comments.append(datas[val])        
-    #res = [val[temp] for key, val in data.items() if temp in val]
-    #print(str(res))
-    #return comments
-
+    try:
+        return data['ndm']['oem']['body']['segment']['data']['COMMENT']
+    except KeyError:
+        return f"Data not loaded in\n", 404
+    
 @app.route('/header', methods = ['GET'])
-def display_header():
+def display_header() -> dict:
     data = data_set()
-    return data['ndm']['oem']['header']
-    #for i in range(len(data['ndm']['oem']['header'])):
-     #   header.append(data['ndm']['oem']['header'][i])
-    #return header
+    try:
+        return data['ndm']['oem']['header']
+    except KeyError:
+        return f"Data not loaded in\n", 404
 
 @app.route('/metadata', methods = ['GET'])
-def display_metadata():
+def display_metadata() -> dict:
     data = data_set()
-    return data['ndm']['oem']['body']['segment']['metadata']
-    
+    try:
+        return data['ndm']['oem']['body']['segment']['metadata']
+    except KeyError:
+        return f"Data not loaded in\n", 404 
+
 @app.route('/help', methods = ['GET'])
-def define_routes():
+def define_routes() -> str:
     return '''\nUsage: curl 'localhost:5000[OPTIONS]'\n
     Options:\n
     1. /                                   returns entire ISS data set\n

@@ -206,10 +206,15 @@ def define_routes() -> str:
     1. /                                   returns entire ISS data set\n
     2. /epochs                             returns list of all EPOCHs\n
     3. /epochs?limit=<int>&offset=<int>    returns modified list of EPOCHs given query parameters of limit and offset\n
-    4. /epochs/<epoch>                     returns state vectors for a specified EPOCH\n
-    5. /epochs/<epoch>/speed               returns instantaneous speed for specified EPOCH\n
-    6. /delete-data                        deletes all data stored in the ISS data set dictionary\n
-    7. /post-data                          reloads the ISS data set from the web into the dictionary object\n
+    4. /epochs/<epoch>                     returns state vectors for a specified <epoch>\n
+    5. /epochs/<epoch>/speed               returns instantaneous speed for specified <epoch>\n
+    6. /epochs/<epoch>/location            returns latitude, longitude, altitude, and geoposition for the specified <epoch>\n
+    7. /now                                returns same data at #6, but for real time position of the ISS\n
+    8. /comment                            returns 'comment' list from ISS data\n
+    9. /header                             returns 'header' dictionary from ISS data\n
+    10. /metadata                          returns 'metadata'dictionary from ISS data\n
+    11. /delete-data                       deletes all data stored in the ISS data set dictionary\n
+    12. /post-data                         reloads the ISS data set from the web into the dictionary object\n
 '''
 
 if __name__ == '__main__':

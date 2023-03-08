@@ -23,7 +23,7 @@ where `<username>` is your Docker Hub username and `<version>` is the version ta
 After pulling the image from the Docker Hub, the above processes of buliding and running can be simplified utilizing *docker-compose.yml*. This will automatically configure all options needed to start the container in a single file. Once the file is in the same directory as *Dockerfile* and *iss_tracker.py*, the container can be started with the line:
 > `docker-compose up --build`
 
-With the commands above of building and running the containerized Flask app, server will be running. Now, the second terminal will be used for the HTTP requests to the API.
+With the commands above of building and running the containerized Flask app, the server will be running. Now, the second terminal will be used for the HTTP requests to the API.
 
 ### Requests to the API
 With the container running in the other terminal, the second terminal can be used for requests to the API. To start, run the line:

@@ -1,4 +1,4 @@
-#Pranjal Adhikari pa8729
+#Pranjal Adhikari
 
 from flask import Flask, request
 from geopy.geocoders import Nominatim
@@ -173,7 +173,7 @@ def now() -> dict:
     diff = float('inf')
     try:
         for i in data['ndm']['oem']['body']['segment']['data']['stateVector']:
-            strptime = time.strptime(i['EPOCH'][:-5], '%Y-%jT%H:%M:%S')
+            strptime = time.strptime(i['EPOCH'][0:17], '%Y-%jT%H:%M:%S')
             epoch_time = time.mktime(strptime)
             time_diff = current_time - epoch_time
             if abs(time_diff) < abs(diff):

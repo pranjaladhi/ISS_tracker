@@ -41,6 +41,8 @@ def modified_epoch():
     data = data_set()
     try:
         num_epochs = request.args.get('limit', len(data['ndm']['oem']['body']['segment']['data']['stateVector']))
+    except TypeError:
+        return f"Data not loaded in\n", 404
     except KeyError:
         return f"Data not loaded in\n", 404
     start = request.args.get('offset', 0)
@@ -98,6 +100,8 @@ def epoch_speed(epoch: str) -> dict:
         sumSpeedSquare = pow(float(data[0]['X_DOT']['#text']), 2) + pow(float(data[0]['Y_DOT']['#text']), 2) + pow(float(data[0]['Z_DOT']['#text']), 2)
     except TypeError:
         return f"Data not loaded in\n", 404
+    except KeyError:
+        return f"Data not loaded in\n", 404
     speed = (math.sqrt(sumSpeedSquare)) #magnitude of speed utilizing the x, y, and z components of speed
     speed_data = {}
     speed_data['value'] = speed
@@ -113,6 +117,8 @@ def epoch_location(epoch: str) -> dict:
         y = float(data[0]['Y']['#text'])
         z = float(data[0]['Z']['#text'])
     except TypeError:
+        return f"Data not loaded in\n", 404
+    except KeyError:
         return f"Data not loaded in\n", 404
     hrs = int(epoch[9:11])
     mins = int(epoch[12:14])
@@ -154,6 +160,8 @@ def now() -> dict:
                 diff = time_diff
     except TypeError:
         return f"Data not loaded in\n", 404
+    except KeyError:
+        return f"Data not loaded in\n", 404
     now_data['closest_epoch'] = min_i['EPOCH']
     now_data['speed'] = epoch_speed(min_i['EPOCH'])
     now_data['seconds_from_now'] = diff
@@ -180,6 +188,8 @@ def display_comments() -> list:
     data = data_set()
     try:
         return data['ndm']['oem']['body']['segment']['data']['COMMENT']
+    except TypeError:
+        return f"Data not loaded in\n", 404
     except KeyError:
         return f"Data not loaded in\n", 404
     
@@ -188,6 +198,8 @@ def display_header() -> dict:
     data = data_set()
     try:
         return data['ndm']['oem']['header']
+    except TypeError:
+        return f"Data not loaded in\n", 404
     except KeyError:
         return f"Data not loaded in\n", 404
 
@@ -196,6 +208,8 @@ def display_metadata() -> dict:
     data = data_set()
     try:
         return data['ndm']['oem']['body']['segment']['metadata']
+    except TypeError:
+        return f"Data not loaded in\n", 404
     except KeyError:
         return f"Data not loaded in\n", 404 
 

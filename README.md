@@ -27,9 +27,9 @@ After building and running the containerized Flask app in the first terminal, th
 
 ### Requests to the API
 With the container running in the other terminal, requests can be made to the API. To start, run the line:
-> `curl localhost:5000/help`
+#### > `curl localhost:5000/help`
 
-This will output brief descriptions of all the available routes in the API. The output may look like:
+This will output brief descriptions of all the available routes in the API. The output will look like:
 ```
 Usage: curl 'localhost:5000[OPTIONS]'
 

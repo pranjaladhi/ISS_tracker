@@ -48,7 +48,7 @@ Options:
     	12. /post-data                          reloads the ISS data set from the web into the dictionary object
 ```
 
-> `curl localhost:5000/`
+**> `curl localhost:5000/`**
 
 This first route will make a request to the Flask app to return the entire ISS Trajectory data set. An example output may look like:
 ```

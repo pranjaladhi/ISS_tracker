@@ -12,18 +12,18 @@ First, open two terminals. The first terminal will be used to utilize the the im
 Next, to run the containerized Flask app, run the line:
 > `docker run -it --rm -p <host port>:<container port> pranjaladhikari/iss_tracker:1.0`
 
-The flag `-p` is used to bind a port on the container to a port on the machine that is running the script. For example, if the Flask application is running on the port 5000, but the `<container port>` is not connected to port 5000, then the Flask program won't be able to communicate with the machine.
+The flag `-p` is used to bind a port on the container to a port on the machine that is running the script. For example, if the Flask application is running on the `<host port>` 5000, but the `<container port>` is not connected to port 5000, then the Flask program won't be able to start and communicate with the machine.
 
 If building a new image from the Dockerfile, both of the files *Dockerfile* and *iss_tracker.py* must be in the same directory. Afterwards, the image can be built with the line:
 > `docker build -t <username>/iss_tracker:<version> .`
 
-where `<username>` is your Docker Hub username. Then, it can be ran with the line:
+where `<username>` is your Docker Hub username and `<version>` is the version tag. Then, it can be ran with the line:
 > `docker run -it --rm -p <host port>:<container port> <username>/iss_tracker:<version>`
 
 After pulling the image from the Docker Hub, the above processes of buliding and running can be simplified utilizing *docker-compose.yml*. This will automatically configure all options needed to start the container in a single file. Once the file is in the same directory as *Dockerfile* and *iss_tracker.py*, the container can be started with the line:
 > `docker-compose up --build`
 
-After building and running the containerized Flask app in the first terminal, the server will be running. Now, the second terminal will be used for the HTTP requests to the API.
+With the commands above of building and running the containerized Flask app, server will be running. Now, the second terminal will be used for the HTTP requests to the API.
 
 ### Requests to the API
 With the container running in the other terminal, the second terminal can be used for requests to the API. To start, run the line:

@@ -88,9 +88,9 @@ This first route will make a request to the Flask app to return the entire ISS T
 }
 ```
 
-> `curl localhost:5000/epochs`
+#### > `curl localhost:5000/epochs`
 
-This route will return all the EPOCHs (time set) data in the set. The output may look like: 
+This will return all the EPOCHs (time set) data. The output may look like: 
 ```
 .
 .
@@ -102,7 +102,7 @@ This route will return all the EPOCHs (time set) data in the set. The output may
 ]
 ```
 
-> `curl 'localhost:5000/epochs?limit=<int>&offset=<int>'`
+#### > `curl 'localhost:5000/epochs?limit=<int>&offset=<int>'`
 
 This request gives the user the ability to input query parameters for the number of EPOCHs (limit) and beginning index (offset) to return. The user can input values in place of `<int>`. An example output for `limit=2&offset=4` may look like:
 ```
@@ -111,11 +111,9 @@ This request gives the user the ability to input query parameters for the number
  "2023-058T12:20:00.000Z"
 ]   
 ```
-        
-START HERE Furthermore, running the line:
-> `curl localhost:5000/epochs/<epoch>`
 
-with '2023-063T12:00:00.000Z' in the place of `<epoch>` may result in the output of:
+#### > `curl localhost:5000/epochs/<epoch>`
+This will return the positional and velocity data of the specified `<epoch>`. With '2023-063T12:00:00.000Z' in the place of `<epoch>` the route will output:
 ```
 [
   {
@@ -148,31 +146,140 @@ with '2023-063T12:00:00.000Z' in the place of `<epoch>` may result in the output
 ]
 ```
 
-The user also has the ability to output the speed of a specific EPOCH with the line:
-> `curl localhost:5000/epochs/<epoch>/speed`
+#### > `curl localhost:5000/epochs/<epoch>/speed`
 
-With '2023-063T12:00:00.000Z' in place of `<epoch>`, the output may be:
+This will return the speed of the specified `<epoch>`. With '2023-080T13:00:00.000Z' in place of `<epoch>`, the output will result in:
 ```
 {
-  "Speed of EPOCH": 7.661757196327827
+  "units": "km/s",
+  "value": 7.650800966906994
 }
 ```
 
-If the user wanted to delete all ISS data gathered from the source, they can do so with the line:
-> `curl -X DELETE localhost:5000/delete-data`
+#### > `curl localhost:5000/epochs/<epoch>/location`
 
-The `-X DELETE` is required as the route accepts a `DELETE` method, and not the default `GET` method. After running this route, the previous routes will result in error as the ISS data is no longer available for usage. The output will be:
+This returns the location data of the specified `<epoch>`, including the latitude, longitude, and altitude of the ISS. Addtionally, it will output the Earth ground location where the ISS is over. If the ISS is over a large body of water, the output will be `none`. With '2023-067T07:14:07.856Z' in place of `<epoch>`, output will be:
+```
+{
+  "altitude": {
+    "units": "km",
+    "value": 421.21897355423425
+  },
+  "geolocation": {
+    "ISO3166-2-lvl4": "DZ-32",
+    "country": "Algeria",
+    "country_code": "dz",
+    "county": "Brezina District",
+    "state": "El Bayadh",
+    "village": "Brezina"
+  },
+  "latitude": 31.84647224441941,
+  "longitude": 2.123740015947945
+}
+```
+
+#### > `curl localhost:5000/now`
+
+This will return the same location data as in the request above, but for the current time position of the ISS. Additionally, the output will show which the closest EPOCH data was returned, and the time difference between the current time and EPOCH. The output may be:
+```
+{
+  "closest_epoch": "2023-067T07:18:07.856Z",
+  "location": {
+    "altitude": {
+      "units": "km",
+      "value": 424.1789632030168
+    },
+    "geolocation": {
+      "ISO3166-2-lvl4": "NE-1",
+      "country": "Niger",
+      "country_code": "ne",
+      "county": "Bilma",
+      "region": "Agadez Region"
+    },
+    "latitude": 20.659612551699656,
+    "longitude": 13.140683424662214
+  },
+  "seconds_from_now": 105.94805455207825,
+  "speed": {
+    "units": "km/s",
+    "value": 7.6620957205110525
+  }
+}
+```
+
+#### > `curl localhost:5000/comment`
+
+This request returns the comment list from the ISS data set, which includes information regarding the events of the ISS. An example output may be:
+```
+[
+  "Units are in kg and m^2",
+  "MASS=473413.00",
+  "DRAG_AREA=1421.50",
+  "DRAG_COEFF=2.50",
+  "SOLAR_RAD_AREA=0.00",
+  "SOLAR_RAD_COEFF=0.00",
+  "Orbits start at the ascending node epoch",
+  "ISS first asc. node: EPOCH = 2023-03-06T15:56:39.441 $ ORBIT = 2588 $ LAN(DEG) = 73.09384",
+  "ISS last asc. node : EPOCH = 2023-03-21T13:33:16.732 $ ORBIT = 2819 $ LAN(DEG) = 20.51128",
+  "Begin sequence of events",
+  "TRAJECTORY EVENT SUMMARY:",
+  null,
+  "|       EVENT        |       TIG        | ORB |   DV    |   HA    |   HP    |",
+  "|                    |       GMT        |     |   M/S   |   KM    |   KM    |",
+  "|                    |                  |     |  (F/S)  |  (NM)   |  (NM)   |",
+  "=============================================================================",
+  "GMT067 Reboost Optio  067:19:47:00.000             0.6     428.1     408.5",
+  "(2.0)   (231.2)   (220.5)",
+  null,
+  "Crew05 Undock         068:08:00:00.000             0.0     428.7     409.9",
+  "(0.0)   (231.5)   (221.3)",
+  null,
+  "SpX27 Launch          074:00:30:00.000             0.0     428.4     408.9",
+  "(0.0)   (231.3)   (220.8)",
+  null,
+  "SpX27 Docking         075:12:00:00.000             0.0     428.4     408.7",
+  "(0.0)   (231.3)   (220.7)",
+  null,
+  "=============================================================================",
+  "End sequence of events"
+]
+```
+
+#### > `curl localhost:5000/header`
+
+This will return the header dictionary object which includes information of when the data file was created. The output may be:
+```
+{
+  "CREATION_DATE": "2023-066T03:37:31.258Z",
+  "ORIGINATOR": "JSC"
+}
+```
+
+#### > `curl localhost:5000/metadata`
+
+This will output the metadata dictionary object which contains information regarding the ISS and the start/stop time of collection of the ISS data. An example output is:
+```
+{
+  "CENTER_NAME": "EARTH",
+  "OBJECT_ID": "1998-067-A",
+  "OBJECT_NAME": "ISS",
+  "REF_FRAME": "EME2000",
+  "START_TIME": "2023-065T15:02:07.856Z",
+  "STOP_TIME": "2023-080T15:02:07.856Z",
+  "TIME_SYSTEM": "UTC"
+}
+```
+
+#### > `curl -X DELETE localhost:5000/delete-data`
+
+This will delete the ISS data gathered from the source. The `-X DELETE` is required as the route accepts a `DELETE` method, and not the default `GET` method. After running this route, the previous routes will result in error as the ISS data is no longer available for usage. The output of running this request will be:
 ```
 Deleted ISS data
 ```
 
-Lastly, if the user wanted to restore/reload the ISS data (reverse of the route above), it can be done so with the line:
-> `curl -X POST localhost:5000/post-data`
+#### > `curl -X POST localhost:5000/post-data`
 
-Here, the `-X POST` is required as the route accepts a `POST` method, and not the default `GET` method. This route will allow the user to run previous routes above as the ISS data has been reloaded. The output after running this route will be:
+Lastly, this will restore/reload the ISS data from the source (reverse of the route above). Here, the `-X POST` is required as the route accepts a `POST` method, and not the default `GET` method. This route will allow the user to run previous routes above as the ISS data has been reloaded. The output after running this route will be:
 ```
 Successfully reloaded ISS data 
 ```
-        
-## ISS Data
-The data used for this project is gathered from the NASA website for the ISS. The file which encompasses this data is in XML format, and contains the state vectors for each time set (or EPOCH) which this project utilizes. The state vectors data set lists the time in UTC; position X, Y, and Z in kilometers (km); and the velocity X, Y, and Z in kilometers per second (km/s). The data set can be found on the [NASA](https://spotthestation.nasa.gov/trajectory_data.cfm) website and is stored [here](https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml).

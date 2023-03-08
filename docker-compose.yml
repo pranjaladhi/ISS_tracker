@@ -6,6 +6,6 @@ services:
                  build:
                         context: ./
                         dockerfile: ./Dockerfile
-                 image: pranjaladhikari/iss_tracker:2.0
+                 image: pranjaladhikari/iss_tracker:1.0
                  ports:
                        - 5000:5000

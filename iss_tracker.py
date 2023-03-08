@@ -168,21 +168,6 @@ def now() -> dict:
     now_data['location'] = epoch_location(min_i['EPOCH'])
     return now_data
 
-#to run: curl -X DELETE localhost:5000/delete-data
-@app.route('/delete-data', methods = ['DELETE'])
-def del_data() -> str:
-    global iss_data
-    iss_data.clear()
-    return "Deleted ISS data\n"
-
-#to run: curl -X POST localhost:5000/post-data
-@app.route('/post-data', methods = ['POST'])
-def retrieve_data() -> str:
-    global iss_data
-    r = requests.get('https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
-    iss_data = xmltodict.parse(r.text)
-    return "Successfully reloaded data\n"
-
 @app.route('/comment', methods = ['GET'])
 def display_comments() -> list:
     data = data_set()
@@ -212,6 +197,21 @@ def display_metadata() -> dict:
         return f"Data not loaded in\n", 404
     except KeyError:
         return f"Data not loaded in\n", 404 
+
+#to run: curl -X DELETE localhost:5000/delete-data
+@app.route('/delete-data', methods = ['DELETE'])
+def del_data() -> str:
+    global iss_data
+    iss_data.clear()
+    return "Deleted ISS data\n"
+
+#to run: curl -X POST localhost:5000/post-data
+@app.route('/post-data', methods = ['POST'])
+def retrieve_data() -> str:
+    global iss_data
+    r = requests.get('https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
+    iss_data = xmltodict.parse(r.text)
+    return "Successfully reloaded data\n"    
 
 @app.route('/help', methods = ['GET'])
 def define_routes() -> str:

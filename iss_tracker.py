@@ -28,6 +28,7 @@ def data_set() -> dict:
         return f"Data not loaded in\n", 404
     return iss_data
 
+
 #to run with query parameter: curl 'localhost:5000/epochs?limit=int&offset=int'
 @app.route('/epochs', methods = ['GET'])
 def modified_epoch() -> list:
@@ -63,6 +64,7 @@ def modified_epoch() -> list:
         start += 1
     return epochs
 
+
 @app.route('/epochs/<epoch>', methods = ['GET'])
 def vectors(epoch: str) -> list:
     """
@@ -84,6 +86,7 @@ def vectors(epoch: str) -> list:
         return f"Data not loaded in\n", 404
     except TypeError:
         return f"Data not loaded in\n", 404
+
     
 @app.route('/epochs/<epoch>/speed', methods = ['GET'])
 def epoch_speed(epoch: str) -> dict:
@@ -107,6 +110,7 @@ def epoch_speed(epoch: str) -> dict:
     speed_data['value'] = speed
     speed_data['units'] = data[0]['X_DOT']['@units']
     return speed_data
+
 
 @app.route('/epochs/<epoch>/location', methods = ['GET'])
 def epoch_location(epoch: str) -> dict:
@@ -152,6 +156,7 @@ def epoch_location(epoch: str) -> dict:
     location_data['geolocation'] = geolocation
     return location_data
 
+
 @app.route('/now', methods = ['GET'])
 def now() -> dict:
     """
@@ -184,6 +189,7 @@ def now() -> dict:
     now_data['location'] = epoch_location(min_i['EPOCH'])
     return now_data
 
+
 @app.route('/comment', methods = ['GET'])
 def display_comments() -> list:
     """
@@ -201,6 +207,7 @@ def display_comments() -> list:
         return f"Data not loaded in\n", 404
     except KeyError:
         return f"Data not loaded in\n", 404
+
     
 @app.route('/header', methods = ['GET'])
 def display_header() -> dict:
@@ -220,6 +227,7 @@ def display_header() -> dict:
     except KeyError:
         return f"Data not loaded in\n", 404
 
+    
 @app.route('/metadata', methods = ['GET'])
 def display_metadata() -> dict:
     """
@@ -238,6 +246,7 @@ def display_metadata() -> dict:
     except KeyError:
         return f"Data not loaded in\n", 404 
 
+    
 #to run: curl -X DELETE localhost:5000/delete-data
 @app.route('/delete-data', methods = ['DELETE'])
 def del_data() -> str:
@@ -253,6 +262,7 @@ def del_data() -> str:
     iss_data.clear()
     statement = "Deleted ISS data\n"
     return statement
+
 
 #to run: curl -X POST localhost:5000/post-data
 @app.route('/post-data', methods = ['POST'])
@@ -270,7 +280,8 @@ def retrieve_data() -> str:
     iss_data = xmltodict.parse(r.text)
     statement = "Successfully reloaded ISS data\n"    
     return statement
-    
+
+
 @app.route('/help', methods = ['GET'])
 def define_routes() -> str:
     return '''\nUsage: curl 'localhost:5000[OPTIONS]'\n
@@ -288,6 +299,8 @@ def define_routes() -> str:
     11. /delete-data                       deletes all data stored in the ISS data set dictionary\n
     12. /post-data                         reloads the ISS data set from the web into the dictionary object\n
 '''
+
+
 
 if __name__ == '__main__':
     app.run(debug = True, host = '0.0.0.0')

@@ -71,7 +71,7 @@ The flag `-p` is used to bind a port on the container to a port on the machine t
 If building a new image from the Dockerfile, both of the files *Dockerfile* and *iss_tracker.py* will need to be in the same directory. Afterwards, the image can be built with the line:
 > `docker build -t <username>/iss_tracker:<version> .`
 
-where <username> is your Docker Hub username. Afterwards, it can be ran with the line:
+where `<username>` is your Docker Hub username. Afterwards, it can be ran with the line:
 > `docker run -it --rm -p <host port>:<container port> <username>/iss_tracker:<version>`
 
 After building and running the containerized Flask app in the first terminal, the server will be running. Now, the second terminal will be used for the API query commands. To start, run the line:

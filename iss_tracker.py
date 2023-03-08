@@ -117,7 +117,7 @@ def epoch_location(epoch: str) -> dict:
     hrs = int(epoch[9:11])
     mins = int(epoch[12:14])
     lat = math.degrees(math.atan2(z, math.sqrt(pow(x, 2)+pow(y, 2))))
-    lon = math.degrees(math.atan2(y, x)) - ((hrs-12)+(mins/60))*(360/24) + 24
+    lon = math.degrees(math.atan2(y, x)) - ((hrs-12)+(mins/60))*(360/24) + 32
     if lon > 180: #handling cases where longitude outside of earth latitude range -180 => 180 degrees
         lon -= 360
     elif lon < -180:

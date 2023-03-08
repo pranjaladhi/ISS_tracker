@@ -49,9 +49,8 @@ Options:
 ```
 
 > `curl localhost:5000/`
-This first route will make a request to the Flask app to return the entire ISS Trajectory data set.
 
-An example output may look like:
+This first route will make a request to the Flask app to return the entire ISS Trajectory data set. An example output may look like:
 ```
 .
 .
@@ -90,9 +89,8 @@ An example output may look like:
 ```
 
 > `curl localhost:5000/epochs`
-This route will return all the EPOCHs (time set) data in the set.
 
-The output may look like: 
+This route will return all the EPOCHs (time set) data in the set. The output may look like: 
 ```
 .
 .
@@ -105,9 +103,8 @@ The output may look like:
 ```
 
 > `curl 'localhost:5000/epochs?limit=<int>&offset=<int>'`
-This request gives the user the ability to input query parameters for the number of EPOCHs (limit) and beginning index (offset) to return. The user can input values in place of `<int>`.
 
-An example output for `limit=2&offset=4` may look like:
+This request gives the user the ability to input query parameters for the number of EPOCHs (limit) and beginning index (offset) to return. The user can input values in place of `<int>`. An example output for `limit=2&offset=4` may look like:
 ```
 [
  "2023-058T12:16:00.000Z",

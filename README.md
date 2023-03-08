@@ -1,4 +1,4 @@
-# Tracking the International Space Station 
+0;10;1c# Tracking the International Space Station 
 
 ### Purpose
 One of the goals of this project is to develop a Flask application to query and return information regarding the position and velocity of the International Space Station (ISS) at a given time. The data of the ISS is supplied through the [NASA](https://spotthestation.nasa.gov/trajectory_data.cfm) website and is stored [here](https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml), a XML data set. Taking the data, a Flask application is developed that exposes the data to the user by eight different routes with the user's input, all done within the file *iss_tracker.py*. A main objective of this project is to develop skills working with the Python Flask web framework and learn how to setup a REST API with multiple routes (URLs). Additionally, another object is to learn how to containerize the script with Docker for any user to utilize the script. Working with the Flask library will allow for the understanding of building web servers and allow for fimiliarization in understanding how they are used. Furthermore, learning how to containerize will allow for the sharing of programs to other users.
@@ -79,7 +79,9 @@ After building and running the containerized Flask app in the first terminal, th
 
 This will output brief descriptions of all the available routes in the API. An example may look like:
 ```
-Usage: curl 'localhost:5000[OPTIONS]'                                                                                                  Options:
+Usage: curl 'localhost:5000[OPTIONS]'
+
+Options:
         1. /                                    returns entire ISS data set
         2. /epochs                              returns list of all EPOCHs
         3. /epochs?limit=<int>&offset=<int>     returns modified list of EPOCHs given query parameters of limit and offset

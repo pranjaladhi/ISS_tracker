@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 
 @app.route('/', methods = ['GET'])
-def data_set():
+def data_set() -> dict:
     """
     Outputs the entire ISS Trajectory Data found on the NASA website.
 
@@ -30,7 +30,7 @@ def data_set():
 
 #to run with query parameter: curl 'localhost:5000/epochs?limit=int&offset=int'
 @app.route('/epochs', methods = ['GET'])
-def modified_epoch():
+def modified_epoch() -> list:
     """
     Lists all the EPOCHs in the data set of the ISS. With query parameters ('limit' and 'offset'), the user will be able to control how many and which EPOCHs to display.
     Args:
@@ -110,6 +110,14 @@ def epoch_speed(epoch: str) -> dict:
 
 @app.route('/epochs/<epoch>/location', methods = ['GET'])
 def epoch_location(epoch: str) -> dict:
+    """
+    Calculates the location of the specified EPOCH with the latitude, longitude, and altitude of the ISS.
+    
+    Args:
+        epoch (str): specified EPOCH time stamp
+    Returns:
+        location (dict): the location of the ISS at the specified EPOCH
+    """
     data = vectors(epoch)
     mean_earth_radius = 6371 #earth radius in km
     try:
@@ -146,6 +154,14 @@ def epoch_location(epoch: str) -> dict:
 
 @app.route('/now', methods = ['GET'])
 def now() -> dict:
+    """
+    Returns the location data of the ISS for the most recent, up-to-date, real time position.
+
+    Args:
+        none
+    Returns:
+        location (dict): location data of the ISS for the most recent position
+    """
     data = data_set()
     now_data = {}
     current_time = time.time()
@@ -170,6 +186,14 @@ def now() -> dict:
 
 @app.route('/comment', methods = ['GET'])
 def display_comments() -> list:
+    """
+    Lists all the data in the 'comment' list object in the ISS data.
+    
+    Args:
+        none
+    Returns:
+        comment (list): data in the comment list
+    """
     data = data_set()
     try:
         return data['ndm']['oem']['body']['segment']['data']['COMMENT']
@@ -180,6 +204,14 @@ def display_comments() -> list:
     
 @app.route('/header', methods = ['GET'])
 def display_header() -> dict:
+    """
+    Outputs all data in the 'header' dictionary object in the data.
+
+    Args:
+        none
+    Returns:
+        header (dict): data in the 'header' dictionary
+    """
     data = data_set()
     try:
         return data['ndm']['oem']['header']
@@ -190,6 +222,14 @@ def display_header() -> dict:
 
 @app.route('/metadata', methods = ['GET'])
 def display_metadata() -> dict:
+    """
+    Lists all data in the 'metadata' dictionary object in the ISS data.
+
+    Args:
+        none
+    Returns:
+        metadata (dict): data in the 'metadata' dictionary
+    """
     data = data_set()
     try:
         return data['ndm']['oem']['body']['segment']['metadata']
@@ -201,18 +241,36 @@ def display_metadata() -> dict:
 #to run: curl -X DELETE localhost:5000/delete-data
 @app.route('/delete-data', methods = ['DELETE'])
 def del_data() -> str:
+    """
+    Deletes the ISS Trajectory Data stored in the global iss_data dictionary object.
+
+    Args:
+        none
+    Returns:
+        statement (str): verifiction the data has been deleted
+    """
     global iss_data
     iss_data.clear()
-    return "Deleted ISS data\n"
+    statement = "Deleted ISS data\n"
+    return statement
 
 #to run: curl -X POST localhost:5000/post-data
 @app.route('/post-data', methods = ['POST'])
 def retrieve_data() -> str:
+    """
+    Reloads the ISS Trajectory Data into the global iss_data dictionary object.
+
+    Args:
+        none
+    Returns:
+        statement (str): verifiction the data has been reloaded
+    """
     global iss_data
     r = requests.get('https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml')
     iss_data = xmltodict.parse(r.text)
-    return "Successfully reloaded data\n"    
-
+    statement = "Successfully reloaded ISS data\n"    
+    return statement
+    
 @app.route('/help', methods = ['GET'])
 def define_routes() -> str:
     return '''\nUsage: curl 'localhost:5000[OPTIONS]'\n

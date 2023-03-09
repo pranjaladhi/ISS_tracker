@@ -279,7 +279,7 @@ This will delete the ISS data gathered from the source. The `-X DELETE` is requi
 Deleted ISS data
 ```
 
-If any of the requests above are ran after running this deleted request, the routes will return a 404 error with the message:
+If any of the requests above are ran after running this deleted request, a 404 error will return with the message:
 ```
 Data not loaded in
 ```

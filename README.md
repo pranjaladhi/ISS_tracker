@@ -1,14 +1,14 @@
 # Tracking the International Space Station API 
 
 ## Purpose
-This project develops a local Flask application to query and return information regarding the International Space Station (ISS). The data of the ISS is supplied through the [NASA](https://spotthestation.nasa.gov/trajectory_data.cfm) website and is stored [here](https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml), a XML data set. Taking the data, a Flask application is developed that exposes the data to the user by twelve different routes with the user's input, all done within the file *iss_tracker.py*.
+This project develops a local Flask application to query and return information regarding the International Space Station (ISS). The data of the ISS is supplied through the [NASA](https://spotthestation.nasa.gov/trajectory_data.cfm) website and is stored [here](https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml), an XML data set. Taking the data, a Flask application is developed that exposes the data to the user by twelve different routes with the user's input, all done within the file *iss_tracker.py*.
 
-A main objective of this project is to develop skills working with the Python Flask web framework and learn how to setup a REST API with multiple routes (URLs). Additionally, another object is to learn how to containerize the script with Docker for any user to utilize the script. Working with the Flask library will allow for the understanding of building web servers in a small scale and allow for fimiliarization in understanding how they are used.
+A main objective of this project is to develop skills working with the Python Flask web framework and learn how to set up a REST API with multiple routes (URLs). Additionally, another object is to learn how to containerize the script with Docker for any user to utilize the script. Working with the Flask library will allow for the understanding of building web servers in a small scale and allow for familiarization in understanding how they are used.
 
 ## Running the Code
 
-### With Docker
-First, open two terminals. The first terminal will be used to utilize the the image from Docker Hub, which will be pulled with the line:
+### Docker Setup
+First, open two terminals. The first terminal will be used to utilize the image from Docker Hub, which will be pulled with the line:
 > `docker pull pranjaladhikari/iss_tracker:1.0`
 
 Next, to run the containerized Flask app, run the line:
@@ -16,13 +16,13 @@ Next, to run the containerized Flask app, run the line:
 
 The flag `-p` is used to bind a port on the container to a port on the machine that is running the script. For example, if the Flask application is running on the `<host port>` 5000, but the `<container port>` is not connected to port 5000, then the Flask program won't be able to start and communicate with the machine.
 
-If building a new image from the Dockerfile, both of the files *Dockerfile* and *iss_tracker.py* must be in the same directory. Afterwards, the image can be built with the line:
+If building a new image from the Dockerfile, both of the files *Dockerfile* and *iss_tracker.py* must be in the same directory. Afterward, the image can be built with the line:
 > `docker build -t <username>/iss_tracker:<version> .`
 
 where `<username>` is your Docker Hub username and `<version>` is the version tag. Then, it can be ran with the line:
 > `docker run -it --rm -p <host port>:<container port> <username>/iss_tracker:<version>`
 
-After pulling the image from the Docker Hub, the above processes of buliding and running can be simplified utilizing *docker-compose.yml*. This will automatically configure all options needed to start the container in a single file. Once the file is in the same directory as *Dockerfile* and *iss_tracker.py*, the container can be started with the line:
+After pulling the image from the Docker Hub, the above processes of building and running can be simplified utilizing *docker-compose.yml*. This will automatically configure all options needed to start the container in a single file. Once the file is in the same directory as *Dockerfile* and *iss_tracker.py*, the container can be started with the line:
 > `docker-compose up --build`
 
 With the commands above of building and running the containerized Flask app, the server will be running. Now, the second terminal will be used for the HTTP requests to the API.
@@ -160,7 +160,7 @@ This will return the speed of the specified `<epoch>`. With '2023-080T13:00:00.0
 
 #### > `curl localhost:5000/epochs/<epoch>/location`
 
-This returns the location data of the specified `<epoch>`, including the latitude, longitude, and altitude of the ISS. Addtionally, it will output the Earth ground location where the ISS is over. If the ISS is over a large body of water, the output will be `none`. With '2023-067T07:14:07.856Z' in place of `<epoch>`, output will be:
+This returns the location data of the specified `<epoch>`, including the latitude, longitude, and altitude of the ISS. Additionally, it will output the Earth ground location where the ISS is over. If the ISS is over a large body of water, the output will be `none`. With '2023-067T07:14:07.856Z' in place of `<epoch>`, output will be:
 ```
 {
   "altitude": {
@@ -249,7 +249,7 @@ This request returns the comment list from the ISS data set, which includes info
 
 #### > `curl localhost:5000/header`
 
-This will return the header dictionary object which includes information of when the data file was created. The output may be:
+This will return the header dictionary object, which includes information of when the data file was created. The output may be:
 ```
 {
   "CREATION_DATE": "2023-066T03:37:31.258Z",
@@ -259,7 +259,7 @@ This will return the header dictionary object which includes information of when
 
 #### > `curl localhost:5000/metadata`
 
-This will output the metadata dictionary object which contains information regarding the ISS and the start/stop time of collection of the ISS data. An example output is:
+This will output the metadata dictionary object, which contains information regarding the ISS and the start/stop time of collection of the ISS data. An example output is:
 ```
 {
   "CENTER_NAME": "EARTH",

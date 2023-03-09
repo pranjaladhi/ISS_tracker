@@ -31,7 +31,7 @@ With the commands above of building and running the containerized Flask app, the
 With the container running in the other terminal, the second terminal can be used for requests to the API. To start, run the line:
 #### > `curl localhost:5000/help`
 
-This will output brief descriptions of all the available routes in the API. The output will look like:
+This will output brief descriptions of all the available requests in the API. The output will look like:
 ```
 Usage: curl 'localhost:5000[OPTIONS]'
 
@@ -52,7 +52,7 @@ Options:
 
 #### > `curl localhost:5000/`
 
-This first route will make a request to the Flask app to return the entire ISS Trajectory data set. An example output may look like:
+This first request will make a request to the Flask app to return the entire ISS Trajectory data set. An example output may look like:
 ```
 .
 .
@@ -160,7 +160,7 @@ This will return the speed of the specified `<epoch>`. With '2023-080T13:00:00.0
 
 #### > `curl localhost:5000/epochs/<epoch>/location`
 
-This returns the location data of the specified `<epoch>`, including the latitude, longitude, and altitude of the ISS. Additionally, it will output the Earth ground location where the ISS is over. If the ISS is over a large body of water, the output will be `none`. With '2023-067T07:14:07.856Z' in place of `<epoch>`, output will be:
+This returns the location data of the specified `<epoch>`, including the latitude, longitude, and altitude of the ISS. Additionally, it will output the Earth ground location where the ISS is over. If the ISS is over a large body of water, the output will be `none`. With '2023-067T07:14:07.856Z' in place of `<epoch>`, the output will be:
 ```
 {
   "altitude": {
@@ -274,14 +274,19 @@ This will output the metadata dictionary object, which contains information rega
 
 #### > `curl -X DELETE localhost:5000/delete-data`
 
-This will delete the ISS data gathered from the source. The `-X DELETE` is required as the route accepts a `DELETE` method, and not the default `GET` method. After running this route, the previous routes will result in error as the ISS data is no longer available for usage. The output of running this request will be:
+This will delete the ISS data gathered from the source. The `-X DELETE` is required as the route accepts a `DELETE` method, and not the default `GET` method. After running this request, the previous requests will result in error as the ISS data is no longer available for usage. The output of running this request will be:
 ```
 Deleted ISS data
 ```
 
+If any of the requests above are ran after running this deleted request, the routes will return a 404 error with the message:
+```
+Data not loaded in
+```
+
 #### > `curl -X POST localhost:5000/post-data`
 
-Lastly, this will restore/reload the ISS data from the source (reverse of the route above). Here, the `-X POST` is required as the route accepts a `POST` method, and not the default `GET` method. This route will allow the user to run previous routes above as the ISS data has been reloaded. The output after running this route will be:
+Lastly, this will restore/reload the ISS data from the source (reverse of the route above). Here, the `-X POST` is required as the route accepts a `POST` method, and not the default `GET` method. This route will allow the user to run previous routes above as the ISS data has been reloaded. The output after running this request will be:
 ```
 Successfully reloaded ISS data 
 ```

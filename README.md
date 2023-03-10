@@ -26,7 +26,7 @@ First, open two terminals. The first terminal will be used to utilize the image 
 Next, to run the containerized Flask app, run the line:
 > `docker run -it --rm -p <host port>:<container port> pranjaladhikari/iss_tracker:1.0`
 
-The flag `-p` is used to bind a port on the container to a port on the machine that is running the script. For example, if the Flask application is running on the `<host port>` 5000, but the `<container port>` is not connected to port 5000, then the Flask program won't be able to start and communicate with the machine.
+The flag `-p` is used to bind a port on the container to a port on the machine that is running the script. For example, if the Flask application is running on the `<host port>` 5000, but the `<container port>` is not connected to port 5000, the Flask program won't be able to start and communicate with the machine.
 
 If building a new image from the Dockerfile, both of the files *Dockerfile* and *iss_tracker.py* must be in the same directory. Afterward, the image can be built with the line:
 > `docker build -t <username>/iss_tracker:<version> .`

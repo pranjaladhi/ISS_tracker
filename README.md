@@ -5,7 +5,7 @@ This project develops a local Flask application to query and return information 
 
 A main objective of this project is to develop skills working with the Python Flask web framework and learn how to set up a REST API with multiple routes. Additionally, another object is to learn how to containerize the script with Docker for any user to utilize the script. Working with the Flask library will allow for the understanding of building web servers in a small scale and allow for familiarization in understanding how they are used.
 
-## Important Files
+## File Structure
 The API is structured with two essential files *iss_tracker.py* and *Dockerfile*.
 
 ### [iss_tracker.py](https://github.com/pranjaladhi/ISS_tracker/blob/main/iss_tracker.py)

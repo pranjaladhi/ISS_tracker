@@ -1,4 +1,4 @@
-# Tracking the International Space Station API 
+# International Space Station Tracker 
 
 ## Purpose
 This project develops a local Flask application to query and return information regarding the International Space Station (ISS). The data utilized in this project is supplied through the [NASA website](https://spotthestation.nasa.gov/trajectory_data.cfm) and is stored [here](https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml), an XML data set. Taking the data, a Flask application is developed that exposes the data to the user by twelve different routes with the user's input.

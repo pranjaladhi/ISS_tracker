@@ -3,7 +3,7 @@
 ## Purpose
 This project develops a local Flask application to query and return information regarding the International Space Station (ISS). The data utilized in this project is supplied through the [NASA website](https://spotthestation.nasa.gov/trajectory_data.cfm) and is stored [here](https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.xml), an XML data set. Taking the data, a Flask application is developed that exposes the data to the user by twelve different routes with the user's input.
 
-A main objective of this project is to develop skills working with the Python Flask web framework and learn how to set up a REST API with multiple routes. Additionally, another object is to learn how to containerize the script with Docker for any user to utilize the script. Working with the Flask library will allow for the understanding of building web servers in a small scale and allow for familiarization in understanding how they are used.
+A main objective of this project is to develop skills working with the Python Flask web framework and learn how to set up a REST API with multiple routes. Additionally, another objective is to learn how to containerize the script with Docker for any user to utilize the application. Working with the Flask library will allow for the understanding of building web servers in a small scale and allow for familiarization in understanding how they are used.
 
 ## File Structure
 The API is structured with two essential files *iss_tracker.py* and *Dockerfile*. The file *docker-compose.yml*, while not essential, can be utilized to run the program with preset configurations. 
